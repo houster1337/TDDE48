@@ -76,7 +76,5 @@ while checkAds():
 statsForNerds()
 driver.implicitly_wait(3)
 getData()
-
 time.sleep(5)
 endSession()
-
