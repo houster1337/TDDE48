@@ -80,3 +80,4 @@ getData()
 time.sleep(5)
 endSession()
 
+print("hej anton")
