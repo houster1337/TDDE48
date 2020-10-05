@@ -10,9 +10,9 @@ buffer = []
 activity = []
 t = 180
  
-#ublock = "1.29.2_1"
-#op.add_argument('load-extension=' + ublock)
-driver = webdriver.Chrome()
+op = Options()
+op.add_argument("--incognito")
+driver = webdriver.Chrome(chrome_options=op)
 driver.create_options()
  
  
@@ -22,9 +22,9 @@ link = "https://www.youtube.com/watch?v=lM02vNMRRB0&ab_channel=NatureRelaxationF
  
 def startups():
     driver.get(link)
-    driver.implicitly_wait(3)
+    driver.implicitly_wait(15)
     driver.find_element_by_xpath("/html/body/ytd-app/ytd-popup-container/paper-dialog/yt-upsell-dialog-renderer/div/div[3]/div[1]/yt-button-renderer/a").click()
-    driver.implicitly_wait(3)
+    driver.implicitly_wait(15)
     frame = driver.find_element_by_xpath("/html/body/ytd-app/ytd-consent-bump-lightbox/paper-dialog/iframe")
     driver.switch_to_frame(frame)
     driver.find_element_by_xpath("/html/body/div/c-wiz/div[2]/div/div/div/div/div[2]/form/div").click()
@@ -45,8 +45,8 @@ def setConditions(delay, downloadMb, uploadMb):
     driver.set_network_conditions(
     offline=False,
     latency=delay,  # additional latency (ms)
-    download_throughput=downloadMb * 1024,  # maximal throughput
-    upload_throughput=uploadMb * 1024)  # maximal throughput
+    download_throughput=downloadMb * 1024 * 128,  # maximal throughput
+    upload_throughput=uploadMb * 1024 * 128)  # maximal throughput
  
 def statsForNerds():
     source = driver.find_element_by_xpath("/html/body/ytd-app/div/ytd-page-manager/ytd-watch-flexy/div[4]/div[1]/div/div[1]/div/div/div/ytd-player/div/div/div[1]/video")
@@ -77,13 +77,13 @@ def getData():
         buffer.append(float(buf))
         time.sleep(0.3)
  
-setConditions(delay=0, downloadMb=10, uploadMb=10)
+setConditions(delay=5, downloadMb=5, uploadMb=10)
 startups()
 while checkAds():
     time.sleep(1)
  
 statsForNerds()
-driver.implicitly_wait(3)
+driver.implicitly_wait(15)
 getData()
 time.sleep(5)
 endSession()
