@@ -8,10 +8,12 @@ import numpy as np
  
 buffer = []
 activity = []
+resolution = []
 t = 180
 op = Options()
 op.add_argument("--incognito")
-driver = webdriver.Chrome(chrome_options=op)
+op.add_argument("--start-maximized")
+driver = webdriver.Chrome(options=op)
 driver.create_options()
 
 link = "https://www.youtube.com/watch?v=lM02vNMRRB0&ab_channel=NatureRelaxationFilms"
@@ -64,6 +66,11 @@ def collectData():
         buf = driver.find_element_by_css_selector("#movie_player > div.html5-video-info-panel > div > div:nth-child(11) > span > span:nth-child(2)").text
         buf = buf[:-2]
         buffer.append(float(buf))
+
+        res = driver.find_element_by_css_selector("#movie_player > div.html5-video-info-panel > div > div:nth-child(3) > span").text
+        res = res.split("@")[0]
+        res = res.split("x")[1]
+        resolution.append(float(res))
         time.sleep(0.3)
 
 # Saves the data and prints out the mean buffer size [s] and mean network activity [KB]. 
@@ -77,20 +84,23 @@ def endSession():
     print("*Results*")
     print("Mean buffer size: "+str(np.mean(npBuffer)))
     print("Mean network activity: "+str(np.mean(npActivity)))
-    fBuff = open("BadBuff.txt", "w")
+    fBuff = open("4gBuff.txt", "w")
     fBuff.write(str(buffer))
     fBuff.close()
-    fNet = open("BadNet.txt", "w")
+    fNet = open("4gNet.txt", "w")
     fNet.write(str(activity))
     fNet.close()
+    fRes = open("4gRes.txt", "w")
+    fRes.write(str(resolution))
+    fRes.close()
     driver.quit()
 
 # Remove if you want to run the script without virtual limitations.
-setConditions(delay=500, downloadMb=1, uploadMb=1)
+setConditions(delay=50, downloadMb=50, uploadMb=10)
 startup()
 ## Checks if any ads are running to avoid them interferring with the experiment.
 while checkAds():
-    time.sleep(1)
+    time.sleep(0.5)
 
 statsForNerds()
 driver.implicitly_wait(15)
