@@ -84,19 +84,19 @@ def endSession():
     print("*Results*")
     print("Mean buffer size: "+str(np.mean(npBuffer)))
     print("Mean network activity: "+str(np.mean(npActivity)))
-    fBuff = open("4gBuff.txt", "w")
+    fBuff = open("mixBuff.txt", "w")
     fBuff.write(str(buffer))
     fBuff.close()
-    fNet = open("4gNet.txt", "w")
+    fNet = open("mixNet.txt", "w")
     fNet.write(str(activity))
     fNet.close()
-    fRes = open("4gRes.txt", "w")
+    fRes = open("mixRes.txt", "w")
     fRes.write(str(resolution))
     fRes.close()
     driver.quit()
 
 # Remove if you want to run the script without virtual limitations.
-setConditions(delay=50, downloadMb=50, uploadMb=10)
+setConditions(delay=500, downloadMb=1, uploadMb=1)
 startup()
 ## Checks if any ads are running to avoid them interferring with the experiment.
 while checkAds():
@@ -104,6 +104,10 @@ while checkAds():
 
 statsForNerds()
 driver.implicitly_wait(15)
+collectData()
+setConditions(delay=100, downloadMb=0.78, uploadMb=0.33)
+collectData()
+setConditions(delay=50, downloadMb=50, uploadMb=10)
 collectData()
 time.sleep(5)
 endSession()
